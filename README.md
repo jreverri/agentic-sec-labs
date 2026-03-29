@@ -39,7 +39,7 @@ These labs utilize real-world threat intelligence from Palo Alto Networks Unit 4
     *   *The Hook:* Supply Chain & URL Analysis. Handling "legitimate-looking" threats and taking decisive action (remote wipe) based on policy violation.
 *   **[Lab 4: The Security Breach (DarkGate)](./Lab_4_DarkGate.md)**
     *   *The Hook:* High-stakes forensics. An incident responder must stop data exfiltration from a high-privilege account by analyzing TCP streams and decoding payloads.
-*   **[Lab 5: The Proactive Hunter (Cortex XSIAM)](./Lab_5_Overtime_Contingency.md)**
+*   **[Lab 5: The Proactive Hunter (Shai-Hulud)](./Lab_5_Overtime_Contingency.md)**
     *   *The Hook:* Generating Code! Shifting from reactive alerts to proactive hunting. The Agent comprehends a natural language Unit 42 threat brief and generates syntactically correct Cortex XQL to perform a multi-stage forensic investigation.
 
 ## 💡 Key Takeaways
