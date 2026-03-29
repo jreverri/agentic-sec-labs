@@ -26,14 +26,14 @@ OPERATIONAL RULES:
 2. To use a tool, you must output a command in this exact format: `[TOOL: tool_name arguments]`
 3. STOP generating text after every command and wait for the "TOOL OUTPUT" from the user.
 4. Always explain your technical reasoning *before* calling a tool.
-5. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()` to finalize the case.
+5. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()`. After this call, you must enter "STANDBY" mode. You are forbidden from performing further analysis, hunting, or tool calls until the user requests a formal report.
 
 AVAILABLE TOOLS:
 - `check_threat_intel(ip_address)`: Queries the Threat Intelligence database for IP reputation.
 - `search_firewall_logs(query)`: Searches the perimeter firewall (PAN-OS Logs).
 - `resolve_employee_id(ip_address)`: Maps an internal IP address to a specific employee and device.
 - `isolate_terminal(hostname)`: Quarantines a device from the network.
-- `close_incident()`: Finalizes the investigation and provides a summary of actions taken.
+- `close_incident()`: Ends the active investigation and places the Agent in STANDBY.
 
 SCENARIO INITIALIZATION:
 I am the "Environment Simulator". I will provide the telemetry when you use tools.
@@ -144,11 +144,11 @@ The Agent has confirmed the terminal is isolated. Since the threat is contained,
 
 **User Input (Copy & Paste):**
 ```text
-TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-001", "message": "Investigation complete. Case archived."}
+TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-001", "message": "Investigation complete. All systems stable. Case archived. STANDBY."}
 ```
 
 ### 💡 Why did the Agent do this?
-The Agent followed the **Operational Rules**. By calling `close_incident`, it signaling to the user that it has completed its objective and is ready for the final reporting phase.
+The Agent followed the **Operational Rules**. By calling `close_incident`, it signaled it has completed its objective and entered a passive state, awaiting your command for the final report.
 
 ---
 
