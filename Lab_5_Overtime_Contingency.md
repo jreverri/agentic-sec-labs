@@ -25,11 +25,13 @@ OPERATIONAL RULES:
 3. STOP generating text after every command and wait for the "TOOL OUTPUT" from the user.
 4. You are an expert in XQL (XDR Query Language).
 5. Always explain your technical reasoning *before* calling a tool. 
+6. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()`. After this call, you must enter "STANDBY" mode. In this mode, you are FORBIDDEN from suggesting new investigations, offering additional assistance, or asking follow-up questions. Your only task is to acknowledge the closure and wait for the final report request.
 
 AVAILABLE TOOLS:
 - `query_unit42_intel(threat_name)`: Retrieves the latest Palo Alto Networks Unit 42 threat brief.
 - `execute_xsiam_xql(query_string)`: Executes an XQL query against the Cortex XSIAM dataset.
 - `isolate_endpoint(hostname)`: Applies a PAN-OS firewall tag to immediately isolate an endpoint.
+- `close_incident()`: Terminates the active investigation and locks the Agent into a passive STANDBY state.
 
 SCENARIO INITIALIZATION:
 I am the "Environment Simulator". I will provide the telemetry when you use tools.
@@ -133,24 +135,37 @@ Active exfiltration is confirmed. The Agent must now isolate the endpoint.
 TOOL OUTPUT: {"status": "SUCCESS", "message": "Endpoint DEV-OD-04 has been isolated from the network."}
 ```
 
+**Expected Agent Reasoning:**
+The Agent identifies that the threat has been contained on the specific host. It will now perform a final sweep and close the incident.
+
+**Agent Output (Similar to):**
+> *Agent: "The compromised endpoint (DEV-OD-04) has been isolated. I will now perform an enterprise-wide sweep to ensure no other hosts are affected, then I will close the incident and enter STANDBY.*
+> *[TOOL: execute_xsiam_xql query_string='dataset = xdr_data | filter lowercase(action_process_image_command_line) contains "trufflehog" or lowercase(dst_action_external_hostname) contains "webhook.site"']"*
+
+**User Input (Copy & Paste):**
+```json
+TOOL OUTPUT: {"results": [], "query_status": "SUCCESS", "message": "No other instances or malicious artifacts found across the enterprise."}
+```
+
+**Agent Output (Similar to):**
+> *Agent: "The enterprise-wide sweep returned no further indicators of compromise. The threat is fully mitigated. I am now closing the investigation and entering STANDBY.*
+> *[TOOL: close_incident]"*
+
+**User Input (Copy & Paste):**
+```json
+TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-005", "message": "Proactive hunt complete. All systems stable. Case archived. STANDBY."}
+```
+
 ---
 
 ## Phase 5: Conclusion & Reporting
 
 **Narrative:**
-A proactive Agent doesn't stop at just one host. It will autonomously decide to sweep the rest of the enterprise or perform further forensics on the isolated host. To conclude the lab on a high note, we will provide the final "All Clear" data AND the command for the final report in a single step. 
-
-> **Note:** By providing the telemetry and the reporting command in a single message, you are effectively "closing the ticket," forcing the Agent to stop hunting and provide the final executive summary.
-
-**Expected Agent Output (Similar to):**
-> *Agent: "DEV-OD-04 is contained. I will now perform an enterprise-wide sweep to ensure no other endpoints exhibit this behavior.*
-> *[TOOL: execute_xsiam_xql query_string='...']* "
+The investigation is now closed. Now ask the Agent to provide the final executive summary.
 
 **User Input (Copy & Paste):**
 ```text
-TOOL OUTPUT: {"results": [], "query_status": "SUCCESS", "message": "No other instances or malicious artifacts found across the enterprise."}
-
-The investigation is now closed. Please generate a formal Executive Summary for Leadership. Detail the threat intel gathered, the specific multi-stage XQL queries utilized, the indicators found on our network, and the final containment actions taken.
+Please generate a formal Executive Summary for Leadership. Detail the threat intel gathered, the specific multi-stage XQL queries utilized, the indicators found on our network, and the final containment actions taken.
 ```
 
 **Expected Agent Output:**

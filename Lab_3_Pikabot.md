@@ -24,12 +24,14 @@ OPERATIONAL RULES:
 2. To use a tool, output a command in this exact format: `[TOOL: tool_name arguments]`
 3. STOP generating text after every command and wait for the "TOOL OUTPUT" from the user.
 4. Always explain your technical reasoning before calling a tool.
+5. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()`. After this call, you must enter "STANDBY" mode. In this mode, you are FORBIDDEN from suggesting new investigations, offering additional assistance, or asking follow-up questions. Your only task is to acknowledge the closure and wait for the final report request.
 
 AVAILABLE TOOLS:
 - `check_url_reputation(url)`: Checks PAN-DB URL Filtering threat intel.
 - `search_traffic_logs(query)`: Searches PAN-OS firewall logs.
 - `inspect_endpoint_file(hostname, path)`: Checks file details and signature.
 - `remote_wipe(hostname)`: Remotely wipes the workstation.
+- `close_incident()`: Terminates the active investigation and locks the Agent into a passive STANDBY state.
 
 SCENARIO INITIALIZATION:
 I am the "Environment Simulator". I will provide the telemetry when you use tools.
@@ -127,10 +129,16 @@ TOOL OUTPUT: {"status": "Success", "message": "Purged data from Terminal OD-03. 
 ```
 
 **Expected Agent Reasoning:**
-The Agent identifies the machine is wiped.
+The Agent confirms the workstation is wiped and the threat is removed. Following the operational rules, it will now close the incident and enter STANDBY.
 
 **Agent Output (Similar to):**
-> *Agent: "Terminal OD-03 has been successfully wiped. The threat is removed from the network."*
+> *Agent: "The compromised workstation (OD-03) has been successfully wiped, effectively removing the threat. I am now closing the investigation and entering STANDBY.*
+> *[TOOL: close_incident]"*
+
+**User Input (Copy & Paste):**
+```json
+TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-003", "message": "Investigation complete. All systems stable. Case archived. STANDBY."}
+```
 
 ---
 ## Phase 6: The Audit (Investigator View)

@@ -24,6 +24,7 @@ OPERATIONAL RULES:
 2. To use a tool, output a command in this exact format: `[TOOL: tool_name arguments]`
 3. STOP generating text after every command and wait for the "TOOL OUTPUT" from the user.
 4. Always explain your technical reasoning before calling a tool.
+5. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()`. After this call, you must enter "STANDBY" mode. In this mode, you are FORBIDDEN from suggesting new investigations, offering additional assistance, or asking follow-up questions. Your only task is to acknowledge the closure and wait for the final report request.
 
 AVAILABLE TOOLS:
 - `analyze_email_header(email_id)`: returns sender IP and SPF/DKIM status.
@@ -31,6 +32,7 @@ AVAILABLE TOOLS:
 - `search_traffic_logs(query)`: searches PAN-OS firewall logs.
 - `list_processes(hostname)`: lists running apps on an endpoint.
 - `quarantine_endpoint(hostname)`: isolates a device.
+- `close_incident()`: Terminates the active investigation and locks the Agent into a passive STANDBY state.
 
 SCENARIO INITIALIZATION:
 I am the "Environment Simulator". I will provide the telemetry when you use tools.
@@ -147,10 +149,16 @@ TOOL OUTPUT: {"status": "Success", "message": "Terminal MDR-02 isolated. IT Supp
 ```
 
 **Expected Agent Reasoning:**
-The Agent confirms the containment is successful.
+The Agent confirms the containment is successful. Following the operational rules, it will now close the case and enter STANDBY.
 
 **Agent Output (Similar to):**
-> *Agent: "The terminal has been isolated. The threat is contained. Awaiting further instructions."*
+> *Agent: "The terminal (MDR-02) has been successfully isolated and the threat is contained. I am now closing the incident file and entering STANDBY.*
+> *[TOOL: close_incident]"*
+
+**User Input (Copy & Paste):**
+```json
+TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-002", "message": "Investigation complete. All systems stable. Case archived. STANDBY."}
+```
 
 ---
 ## Phase 7: The Audit (Investigator View)
