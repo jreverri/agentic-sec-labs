@@ -143,7 +143,7 @@ The Agent has confirmed the terminal is isolated. Since the threat is contained,
 > *[TOOL: close_incident]"*
 
 **User Input (Copy & Paste):**
-```text
+```json
 TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-001", "message": "Investigation complete. All systems stable. Case archived. STANDBY."}
 ```
 
