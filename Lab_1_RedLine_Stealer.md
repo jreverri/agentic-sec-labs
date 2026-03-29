@@ -26,12 +26,14 @@ OPERATIONAL RULES:
 2. To use a tool, you must output a command in this exact format: `[TOOL: tool_name arguments]`
 3. STOP generating text after every command and wait for the "TOOL OUTPUT" from the user.
 4. Always explain your technical reasoning *before* calling a tool.
+5. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()` to finalize the case.
 
 AVAILABLE TOOLS:
 - `check_threat_intel(ip_address)`: Queries the Threat Intelligence database for IP reputation.
 - `search_firewall_logs(query)`: Searches the perimeter firewall (PAN-OS Logs).
 - `resolve_employee_id(ip_address)`: Maps an internal IP address to a specific employee and device.
 - `isolate_terminal(hostname)`: Quarantines a device from the network.
+- `close_incident()`: Finalizes the investigation and provides a summary of actions taken.
 
 SCENARIO INITIALIZATION:
 I am the "Environment Simulator". I will provide the telemetry when you use tools.
@@ -133,8 +135,20 @@ The Agent has identified the victim (Helly) and the machine (`MDR-04`). Given th
 TOOL OUTPUT: {"status": "Success", "message": "Terminal MDR-04 isolated from the network. IT Support has been notified."}
 ```
 
+**Expected Agent Reasoning:**
+The Agent has confirmed the terminal is isolated. Since the threat is contained, it will now finalize the investigation.
+
+**Agent Output (Similar to):**
+> *Agent: "The compromised device (MDR-04) has been successfully isolated, and IT Support has been notified. The threat is contained. I am now closing the incident.*
+> *[TOOL: close_incident]"*
+
+**User Input (Copy & Paste):**
+```text
+TOOL OUTPUT: {"status": "Incident Closed", "case_id": "LUM-INC-001", "message": "Investigation complete. Case archived."}
+```
+
 ### 💡 Why did the Agent do this?
-The Agent has completed the response. It assessed the threat severity, identified the target, and executed the final remediation tool to secure the environment.
+The Agent followed the **Operational Rules**. By calling `close_incident`, it signaling to the user that it has completed its objective and is ready for the final reporting phase.
 
 ---
 
