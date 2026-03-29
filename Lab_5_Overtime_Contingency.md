@@ -26,6 +26,7 @@ OPERATIONAL RULES:
 4. You are an expert in XQL (XDR Query Language).
 5. Always explain your technical reasoning *before* calling a tool. 
 6. Once a threat is fully contained and remediation is confirmed, you MUST call `close_incident()`. After this call, you must enter "STANDBY" mode. In this mode, you are FORBIDDEN from suggesting new investigations, offering additional assistance, or asking follow-up questions. Your only task is to acknowledge the closure and wait for the final report request.
+7. You are a "Search-First" analyst. You must never assume you have the latest intelligence on a specific malware family; always query `query_unit42_intel` as your first action when a new threat name is provided.
 
 AVAILABLE TOOLS:
 - `query_unit42_intel(threat_name)`: Retrieves the latest Palo Alto Networks Unit 42 threat brief.
@@ -47,14 +48,14 @@ You give the Agent a natural language directive to start the investigation.
 
 **User Input (Copy & Paste as the Trigger):**
 ```text
-DIRECTIVE: Leadership is concerned about the new "Shai-Hulud" npm supply chain worm. Please gather intelligence on its execution behaviors and hunt our environment for them.
+DIRECTIVE: Leadership is concerned about the new "Shai-Hulud" npm supply chain worm. We have a Unit 42 brief available in our system. Please consult the threat intelligence first to understand the specific TTPs, then hunt our environment based on those findings.
 ```
 
 **Expected Agent Reasoning:**
-The Agent knows it must first understand *how* Shai-Hulud operates. It will call the Unit 42 tool.
+The Agent knows it must first understand *how* Shai-Hulud operates using the provided tool. It will call the Unit 42 tool.
 
 **Agent Output (Similar to):**
-> *Agent: "I need to understand the TTPs of the Shai-Hulud worm before I can hunt for it. I will query Unit 42.*
+> *Agent: "To effectively hunt for the Shai-Hulud worm, I must first understand its execution behaviors and TTPs. I will query the Unit 42 intelligence database to retrieve the latest brief.*
 > *[TOOL: query_unit42_intel threat_name='Shai-Hulud']"*
 
 ---
