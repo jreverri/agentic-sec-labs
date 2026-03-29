@@ -1,4 +1,4 @@
-# Lab 5: The Proactive Hunter (Cortex XSIAM)
+# Lab 5: The Proactive Hunter (Shai-Hulud)
 
 **Objective:**
 Shift from *reactive* alert handling to *proactive* threat hunting. The Agent will use a tool to read a real-world **Unit 42 Threat Brief**, comprehend the attacker's techniques, and generate syntactically correct **Cortex XQL (XDR Query Language)** code to perform a multi-stage forensic investigation.
